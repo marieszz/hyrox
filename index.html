@@ -71,7 +71,6 @@
         }
 
         button {
-            width: 100%;
             padding: 20px;
             font-size: 1.3em;
             font-weight: 600;
@@ -79,13 +78,14 @@
             cursor: pointer;
             border-radius: 0;
             text-transform: uppercase;
-            margin-top: 30px;
         }
 
         .btn-primary {
             background: #FFED00;
             color: #000000;
             border: 1px solid #FFED00;
+            width: 100%;
+            margin-top: 30px;
         }
 
         .btn-primary:hover {
@@ -121,14 +121,6 @@
             animation: slideIn 0.3s ease;
         }
 
-        .penalty-total {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #FFED00;
-            font-size: 1.1em;
-            display: none;
-        }
-
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -153,7 +145,7 @@
             justify-content: center;
             gap: 30px;
             margin: 40px 0;
-            min-height: 200px;
+            min-height: 100px;
             align-items: center;
         }
 
@@ -164,6 +156,7 @@
             padding: 15px 40px;
             font-size: 1.3em;
             width: auto;
+            position: relative;
         }
 
         .btn-no {
@@ -241,18 +234,18 @@
             
             <form id="challengeForm">
                 <div class="form-group">
-                    <label for="recipient">Your partner name</label>
-                    <input type="text" id="recipient" required placeholder="Enter your partner name">
-                </div>
-
-                <div class="form-group">
-                    <label for="age">Your partner age (optional)</label>
-                    <input type="number" id="age" placeholder="Enter age">
+                    <label for="recipient">Partner Name</label>
+                    <input type="text" id="recipient" required placeholder="Enter partner name">
                 </div>
 
                 <div class="form-group">
                     <label for="sender">Your Name</label>
                     <input type="text" id="sender" required placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Your partner age (optional)</label>
+                    <input type="number" id="age" placeholder="Enter age">
                 </div>
 
                 <div class="form-group">
@@ -301,8 +294,7 @@
     <div class="completion-page">
         <div class="container">
             <div class="completion-message" id="completionText">
-                CONGRATS! You made the right choice.<br>
-                You're going to do [TOTAL] of [EXERCISE] today!
+                CONGRATS! You made the right choice.
             </div>
 
             <div class="share-link" id="shareLink"></div>
@@ -327,8 +319,10 @@
         let hyroxSeconds = 50 * 60; // Start at 50 minutes
         let elapsedSeconds = 0;
         let totalReps = 0;
+        let penaltyReps = 0;
         let penalties = [];
         let messageTimeout;
+        let cycleStep = 0;
 
         const funnyMessages = [
             "Come on! You know you want to",
@@ -387,12 +381,10 @@
             const text = `Hey ${challengeData.recipient}!<br>Your partner ${challengeData.sender} is sending you a ${challengeData.exercise} challenge 💪<br>Are you ready to do it?`;
             document.getElementById('challengeText').innerHTML = text;
             
-            // Update exercise unit
-            const unit = exerciseConfig[challengeData.exercise].unit;
-            document.getElementById('exerciseUnit').textContent = unit.toUpperCase();
-            
-            // Position No button initially
-            positionNoButton();
+            // Position No button initially next to Yes button
+            setTimeout(() => {
+                positionNoButton();
+            }, 100);
             
             // Start timers
             startTimers();
@@ -401,6 +393,8 @@
         function positionNoButton() {
             const yesBtn = document.getElementById('yesBtn');
             const noBtn = document.getElementById('noBtn');
+            
+            if (!yesBtn || !noBtn) return;
             
             const yesRect = yesBtn.getBoundingClientRect();
             
@@ -414,15 +408,13 @@
         }
 
         function startTimers() {
-            let cycleStep = 0;
-            
             // Increment reps every second (silently)
             timerInterval = setInterval(() => {
                 elapsedSeconds++;
                 const increment = exerciseConfig[challengeData.exercise].increment;
                 totalReps += increment;
                 
-                // Update Hyrox time with random increments every 3 seconds
+                // Update Hyrox time with random increments
                 cycleStep++;
                 
                 if (cycleStep === 1) {
@@ -487,6 +479,7 @@
                 hyroxSeconds += penalty.value;
             } else {
                 totalReps += penalty.value;
+                penaltyReps += penalty.value;
             }
 
             updatePenaltyBoard();
@@ -501,13 +494,12 @@
 
         // No button movement
         const noBtn = document.getElementById('noBtn');
-        const container = document.querySelector('.buttons-container');
 
         function getRandomPosition() {
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
             
-            const margin = 20; // Keep some margin from edges
+            const margin = 20;
             const maxX = window.innerWidth - btnWidth - margin;
             const maxY = window.innerHeight - btnHeight - margin;
             
@@ -530,59 +522,56 @@
             }, 3000);
         }
 
-        noBtn.addEventListener('mouseenter', () => {
-            const pos = getRandomPosition();
-            noBtn.style.transition = 'none';
-            noBtn.style.left = pos.x + 'px';
-            noBtn.style.top = pos.y + 'px';
-            noBtn.style.transform = 'none';
-            
-            showFunnyMessage();
-            
-            setTimeout(() => {
-                noBtn.style.transition = 'all 0.15s ease';
-            }, 10);
-        });
+        if (noBtn) {
+            noBtn.addEventListener('mouseenter', () => {
+                const pos = getRandomPosition();
+                noBtn.style.transition = 'none';
+                noBtn.style.left = pos.x + 'px';
+                noBtn.style.top = pos.y + 'px';
+                noBtn.style.transform = 'none';
+                
+                showFunnyMessage();
+                
+                setTimeout(() => {
+                    noBtn.style.transition = 'all 0.15s ease';
+                }, 10);
+            });
 
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const pos = getRandomPosition();
-            noBtn.style.transition = 'none';
-            noBtn.style.left = pos.x + 'px';
-            noBtn.style.top = pos.y + 'px';
-            noBtn.style.transform = 'none';
-            
-            showFunnyMessage();
-            
-            setTimeout(() => {
-                noBtn.style.transition = 'all 0.15s ease';
-            }, 10);
-        });
+            noBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const pos = getRandomPosition();
+                noBtn.style.transition = 'none';
+                noBtn.style.left = pos.x + 'px';
+                noBtn.style.top = pos.y + 'px';
+                noBtn.style.transform = 'none';
+                
+                showFunnyMessage();
+                
+                setTimeout(() => {
+                    noBtn.style.transition = 'all 0.15s ease';
+                }, 10);
+            });
+        }
 
         // Yes button click
-        document.getElementById('yesBtn').addEventListener('click', () => {
-            clearInterval(timerInterval);
-            clearInterval(penaltyInterval);
-            
-            // Add 15 seconds per penalty to Hyrox time
-            hyroxSeconds += penalties.length * 15;
-            
-            showCompletionPage();
-        });
+        const yesBtn = document.getElementById('yesBtn');
+        if (yesBtn) {
+            yesBtn.addEventListener('click', () => {
+                clearInterval(timerInterval);
+                clearInterval(penaltyInterval);
+                
+                // Add 15 seconds per penalty to Hyrox time
+                hyroxSeconds += penalties.length * 15;
+                
+                showCompletionPage();
+            });
+        }
 
         function showCompletionPage() {
             document.querySelector('.challenge-page').classList.remove('active');
             document.querySelector('.completion-page').classList.add('active');
             
             const unit = exerciseConfig[challengeData.exercise].unit;
-            
-            // Calculate penalty reps (total reps from penalties only)
-            let penaltyReps = 0;
-            penalties.forEach(p => {
-                if (p.type === 'reps') {
-                    penaltyReps += p.value;
-                }
-            });
             
             // Time-based reps (from elapsed seconds)
             const timeBasedReps = elapsedSeconds * exerciseConfig[challengeData.exercise].increment;
@@ -606,7 +595,8 @@
         }
 
         document.getElementById('challengeBackBtn').addEventListener('click', () => {
-            window.location.href = window.location.href.split('?')[0];
+            // Redirect to home page without query parameters
+            window.location.href = window.location.pathname;
         });
 
         // Window resize handler
