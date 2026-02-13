@@ -244,7 +244,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="age">Your partner age (optional)</label>
+                    <label for="age">Your partner age</label>
                     <input type="number" id="age" placeholder="Enter age">
                 </div>
 
@@ -273,6 +273,9 @@
             <div class="penalty-board">
                 <h3>PENALTY BOARD</h3>
                 <div id="penaltyList"></div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #FFED00;">
+                    PENALTY REPS: <span id="penaltyCounter">0</span>
+                </div>
             </div>
 
             <div class="challenge-message" id="challengeText">
@@ -475,14 +478,26 @@
                 penalties.shift();
             }
 
+            // Add to Hyrox time if it's a time penalty
             if (penalty.type === 'time') {
                 hyroxSeconds += penalty.value;
+                // Convert time penalty to reps based on exercise
+                const repsFromTime = penalty.value * exerciseConfig[challengeData.exercise].increment;
+                totalReps += repsFromTime;
+                penaltyReps += repsFromTime;
             } else {
+                // Direct rep penalty
                 totalReps += penalty.value;
                 penaltyReps += penalty.value;
             }
 
             updatePenaltyBoard();
+            updatePenaltyCounter();
+        }
+
+        function updatePenaltyCounter() {
+            const unit = exerciseConfig[challengeData.exercise].unit;
+            document.getElementById('penaltyCounter').textContent = `${penaltyReps} ${unit}`;
         }
 
         function updatePenaltyBoard() {
