@@ -31,6 +31,9 @@
             margin-bottom: 40px;
             text-align: center;
             text-transform: uppercase;
+            background: #FFED00;
+            color: #000000;
+            padding: 20px;
         }
 
         .home-page, .challenge-page {
@@ -49,25 +52,18 @@
         .section-title {
             background: #FFED00;
             color: #000000;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            font-size: 1.3em;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
             text-transform: uppercase;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1em;
-            text-transform: uppercase;
-            background: #FFED00;
-            color: #000000;
-            padding: 8px 15px;
-            width: fit-content;
+            display: none;
         }
 
         input, select {
@@ -297,27 +293,23 @@
                 <div class="form-section">
                     <div class="section-title">Your Partner</div>
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="recipient" required placeholder="Enter partner name">
+                        <input type="text" id="recipient" required placeholder="Name">
                     </div>
                     <div class="form-group">
-                        <label>Age (optional)</label>
-                        <input type="number" id="age" placeholder="Enter age">
+                        <input type="number" id="age" placeholder="Age (optional)">
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <div class="section-title">Your Name</div>
+                    <div class="section-title">You</div>
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="sender" required placeholder="Enter your name">
+                        <input type="text" id="sender" required placeholder="Your name">
                     </div>
                 </div>
 
                 <div class="form-section">
                     <div class="section-title">Challenge</div>
                     <div class="form-group">
-                        <label>Choose your exercise</label>
                         <select id="exercise" required>
                             <option value="burpees">Burpees</option>
                             <option value="push-ups">Push-ups</option>
