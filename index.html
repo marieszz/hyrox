@@ -650,12 +650,6 @@
             }
         });
 
-        document.getElementById('newChallengeBtn').addEventListener('click', () => {
-            document.getElementById('linkContainer').classList.remove('active');
-            document.getElementById('challengeForm').style.display = 'block';
-            document.getElementById('challengeForm').reset();
-        });
-
         function loadChallengePage() {
             document.querySelector('.home-page').classList.remove('active');
             document.querySelector('.challenge-page').classList.add('active');
