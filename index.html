@@ -636,49 +636,18 @@
             linkContainer.scrollIntoView({ behavior: 'smooth' });
         });
 
-        document.body.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'copyBtn') {
-                e.preventDefault();
-                const linkText = document.getElementById('generatedLink').textContent;
-                navigator.clipboard.writeText(linkText).then(() => {
-                    e.target.textContent = 'Copied! ✓';
-                    setTimeout(() => {
-                        e.target.textContent = 'Copy Link';
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Copy failed:', err);
-                    alert('Failed to copy link');
-                });
-            }
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const linkText = document.getElementById('generatedLink').textContent;
+            navigator.clipboard.writeText(linkText).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied! ✓';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
         });
-
-        document.body.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'copyBtn') {
-                e.preventDefault();
-                const linkText = document.getElementById('generatedLink').textContent;
-                
-                const textArea = document.createElement('textarea');
-                textArea.value = linkText;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-999999px';
-                document.body.appendChild(textArea);
-                textArea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    e.target.textContent = 'Copied! ✓';
-                    setTimeout(() => {
-                        e.target.textContent = 'Copy Link';
-                    }, 2000);
-                } catch (err) {
-                    console.error('Copy failed:', err);
-                    alert('Failed to copy. Please copy manually: ' + linkText);
-                }
-                
-                document.body.removeChild(textArea);
-            }
-        });
-
+        
         function loadChallengePage() {
             document.querySelector('.home-page').classList.remove('active');
             document.querySelector('.challenge-page').classList.add('active');
